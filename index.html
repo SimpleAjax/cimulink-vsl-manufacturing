@@ -669,7 +669,13 @@
           grid-template-columns: 1fr;
         }
         .case-visual {
-          min-height: 300px;
+          min-height: auto;
+          aspect-ratio: 1 / 1;
+          padding: 0;
+        }
+        .case-visual::after,
+        .case-visual > :not(.case-art) {
+          display: none;
         }
         .framework-intro {
           position: static;
@@ -715,9 +721,6 @@
         }
         .case-copy {
           padding: 28px 23px;
-        }
-        .case-visual {
-          padding: 23px;
         }
         .step {
           gap: 13px;
