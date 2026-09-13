@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="A practical operational visibility roadmap for growing manufacturers.">
+    <title>Operational Visibility for Manufacturers | Cimulink</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="cimulink clean only logo - without background.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Roboto+Slab:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <style>
+      :root {
+        --ink: #10231f;
+        --pine: #164b43;
+        --moss: #86a967;
+        --lime: #d3eaab;
+        --paper: #f5f4ee;
+        --white: #fffefa;
+        --muted: #5b6b66;
+        --line: #d5dfd9;
+        --clay: #c56848;
+        --sand: #e9dfcc;
+        --night: #0d1b18;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: Manrope, Arial, sans-serif;
+        line-height: 1.6;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      .shell {
+        width: min(1130px, calc(100% - 40px));
+        margin: auto;
+      }
+      .eyebrow {
+        margin: 0 0 14px;
+        color: var(--pine);
+        font:
+          500 0.72rem/1 "DM Mono",
+          monospace;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+      }
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+      h1,
+      h2 {
+        font-family: "Roboto Slab", Georgia, serif;
+        letter-spacing: -0.045em;
+      }
+      h1 {
+        margin-bottom: 22px;
+        font-size: clamp(2.7rem, 5vw, 4.9rem);
+        line-height: 1.07;
+      }
+      h2 {
+        margin-bottom: 17px;
+        font-size: clamp(2rem, 3.7vw, 3.3rem);
+        line-height: 1.13;
+      }
+      h3 {
+        font-size: 1.12rem;
+        line-height: 1.35;
+      }
+      .button {
+        display: inline-flex;
+        min-height: 47px;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 0 19px;
+        border: 1px solid var(--pine);
+        background: var(--pine);
+        color: #fff;
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.01em;
+        transition: 0.2s ease;
+        cursor: pointer;
+      }
+      .button:hover {
+        background: #0c3831;
+        box-shadow: 0 8px 22px #164b4330;
+        transform: translateY(-2px);
+      }
+      .button.ghost {
+        background: transparent;
+        color: var(--pine);
+      }
+      .button.ghost:hover {
+        background: #e4eee7;
+      }
+      .button.gold {
+        border-color: #f3df9a;
+        background: #f3df9a;
+        color: #183b34;
+      }
+      .button.gold:hover {
+        background: #fff0b8;
+      }
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid var(--line);
+        background: #fffefae8;
+        backdrop-filter: blur(11px);
+      }
+      .navin {
+        display: flex;
+        min-height: 71px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.08rem;
+        font-weight: 800;
+      }
+      .brand img {
+        width: 35px;
+        height: 35px;
+      }
+      .navlinks {
+        display: flex;
+        gap: 22px;
+        color: #455650;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+      .navlinks a:hover {
+        color: var(--pine);
+      }
+      .hero {
+        padding: 77px 0 82px;
+        background: var(--white);
+        border-bottom: 1px solid var(--line);
+      }
+      .hero-copy {
+        max-width: 840px;
+        margin: auto;
+        text-align: center;
+      }
+      .hero-copy .eyebrow {
+        color: var(--clay);
+      }
+      .hero-copy p {
+        max-width: 650px;
+        margin: 0 auto;
+        color: var(--muted);
+        font-size: 1.07rem;
+      }
+      .hero-copy .button {
+        margin-top: 29px;
+      }
+      .vsl-wrap {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 0;
+        margin-top: 47px;
+        border: 1px solid #2e5a50;
+        background: var(--night);
+        box-shadow: 14px 14px 0 var(--sand);
+      }
+      .video-stage {
+        position: relative;
+        min-height: 364px;
+        overflow: hidden;
+        background: var(--night);
+      }
+      .video-stage:before {
+        display: none;
+      }
+      .video-embed { display: block; width: 100%; height: 100%; min-height: 364px; border: 0; }
+      .video-inner {
+        z-index: 1;
+        text-align: center;
+        color: white;
+      }
+      .play {
+        display: grid;
+        width: 76px;
+        height: 76px;
+        margin: auto;
+        place-items: center;
+        border: 1px solid var(--lime);
+        border-radius: 50%;
+        color: var(--lime);
+        font-size: 1.3rem;
+      }
+      .video-inner h3 {
+        margin: 17px 0 0;
+        font-family: "Roboto Slab", Georgia, serif;
+        font-size: 1.35rem;
+      }
+      .video-inner p {
+        margin: 5px 20px 0;
+        color: #bdd0c4;
+        font-size: 0.76rem;
+      }
+      .discover {
+        padding: 34px 31px;
+        background: #133c35;
+        color: #fff;
+      }
+      .discover .eyebrow {
+        color: var(--lime);
+      }
+      .discover h3 {
+        font-family: "Roboto Slab", Georgia, serif;
+        font-size: 1.35rem;
+      }
+      .discover ul {
+        padding: 0;
+        margin: 21px 0 0;
+        list-style: none;
+      }
+      .discover li {
+        position: relative;
+        margin: 0 0 15px;
+        padding-left: 27px;
+        color: #d9e5dd;
+        font-size: 0.84rem;
+        line-height: 1.55;
+      }
+      .discover li:before {
+        position: absolute;
+        left: 0;
+        content: "✓";
+        color: var(--lime);
+        font-weight: 800;
+      }
+      .discover .small {
+        margin: 20px 0 0;
+        color: #a9c0b4;
+        font-size: 0.67rem;
+        line-height: 1.5;
+      }
+      section {
+        padding: 88px 0;
+      }
+      .story-head {
+        max-width: 690px;
+        margin: auto;
+        text-align: center;
+      }
+      .story-head p:last-child {
+        color: var(--muted);
+        font-size: 1.02rem;
+      }
+      .case {
+        overflow: hidden;
+        background: var(--white);
+        border: 1px solid var(--line);
+      }
+      .case + .case {
+        margin-top: 31px;
+      }
+      .case-grid {
+        display: grid;
+        grid-template-columns: 0.84fr 1.16fr;
+      }
+      .case-visual {
+        position: relative;
+        display: flex;
+        min-height: 400px;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 31px;
+        background: #e3ece3;
+        overflow: hidden;
+      }
+      .case-art {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .case-visual::after {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background: linear-gradient(180deg, rgba(255, 254, 250, 0.2), rgba(16, 35, 31, 0.46));
+      }
+      .case-visual > :not(.case-art) {
+        position: relative;
+        z-index: 1;
+      }
+      .case:nth-child(2) .case-visual {
+        background: #f2e8dd;
+      }
+      .case:nth-child(3) .case-visual {
+        background: #e2ebec;
+      }
+      .case-number {
+        color: var(--pine);
+        font:
+          500 0.68rem "DM Mono",
+          monospace;
+        letter-spacing: 0.12em;
+      }
+      .dash {
+        padding: 22px;
+        background: var(--night);
+        color: #e8f0e8;
+        box-shadow: 9px 9px 0 #b5c7b5;
+      }
+      .dash-title {
+        margin-bottom: 18px;
+        color: #b9cbbf;
+        font:
+          0.59rem "DM Mono",
+          monospace;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .dash-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 0;
+        border-top: 1px solid #37594f;
+        font-size: 0.73rem;
+      }
+      .dash-row b {
+        color: #ecca73;
+        font:
+          500 0.75rem "DM Mono",
+          monospace;
+      }
+      .dash-row.good b {
+        color: #cbed9d;
+      }
+      .case-caption {
+        margin: 23px 0 0;
+        color: #4f625a;
+        font-size: 0.81rem;
+        font-weight: 700;
+      }
+      .case-copy {
+        padding: 43px 47px;
+      }
+      .case-label {
+        margin-bottom: 14px;
+        color: var(--clay);
+        font:
+          500 0.69rem "DM Mono",
+          monospace;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .case-copy h2 {
+        font-size: clamp(1.85rem, 3.2vw, 2.8rem);
+      }
+      .location {
+        margin-bottom: 19px;
+        color: var(--pine);
+        font-size: 0.85rem;
+        font-weight: 800;
+      }
+      .case-copy > p {
+        color: var(--muted);
+        font-size: 0.94rem;
+      }
+      .impact-list {
+        padding: 18px 20px;
+        margin: 25px 0;
+        background: #f2f5ef;
+        border-left: 4px solid var(--moss);
+      }
+      .impact-list strong {
+        display: block;
+        margin-bottom: 8px;
+      }
+      .impact-list ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+      .impact-list li {
+        margin: 7px 0;
+        padding-left: 23px;
+        position: relative;
+        color: #41554d;
+        font-size: 0.83rem;
+      }
+      .impact-list li:before {
+        position: absolute;
+        left: 0;
+        content: "✓";
+        color: var(--pine);
+        font-weight: 800;
+      }
+      .case-copy .button {
+        margin-top: 3px;
+      }
+      .founder {
+        background: var(--night);
+        color: #f7f8ed;
+      }
+      .founder .eyebrow {
+        color: var(--lime);
+      }
+      .founder-grid {
+        display: grid;
+        grid-template-columns: 0.82fr 1.18fr;
+        gap: 65px;
+        align-items: center;
+      }
+      .portrait-wrap {
+        position: relative;
+        max-width: 390px;
+      }
+      .portrait-wrap:after {
+        position: absolute;
+        right: -18px;
+        bottom: -18px;
+        width: 62%;
+        height: 50%;
+        z-index: 0;
+        content: "";
+        border: 1px solid #8da87a;
+      }
+      .portrait {
+        position: relative;
+        z-index: 1;
+        display: block;
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+        filter: saturate(0.86);
+      }
+      .founder-copy {
+        max-width: 620px;
+      }
+      .founder-copy h2 {
+        margin-bottom: 12px;
+      }
+      .founder-title {
+        margin-bottom: 21px;
+        color: #c8d7cd;
+        font-size: 0.88rem;
+        font-weight: 700;
+      }
+      .founder-copy > p:not(.eyebrow):not(.founder-title) {
+        color: #c4d1c9;
+        font-size: 0.94rem;
+      }
+      .founder-copy .button {
+        margin-top: 12px;
+      }
+      .framework {
+        background: #edf1e9;
+      }
+      .framework-grid {
+        display: grid;
+        grid-template-columns: 0.76fr 1.24fr;
+        gap: 58px;
+        align-items: start;
+      }
+      .framework-intro {
+        position: sticky;
+        top: 105px;
+      }
+      .framework-intro p:not(.eyebrow) {
+        color: var(--muted);
+      }
+      .framework-intro .button {
+        margin-top: 15px;
+      }
+      .impact-art {
+        display: block;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        margin: 27px 0 8px;
+        object-fit: cover;
+        border: 1px solid var(--line);
+        box-shadow: 8px 8px 0 var(--sand);
+      }
+      .steps {
+        border-top: 1px solid var(--line);
+      }
+      .step {
+        display: grid;
+        grid-template-columns: 68px 1fr auto;
+        gap: 20px;
+        align-items: start;
+        padding: 25px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .step-letter {
+        color: var(--pine);
+        font:
+          600 3rem/0.9 "Roboto Slab",
+          Georgia,
+          serif;
+      }
+      .step h3 {
+        margin: 0 0 6px;
+      }
+      .step p {
+        max-width: 550px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.86rem;
+      }
+      .step time {
+        padding-top: 3px;
+        color: var(--clay);
+        font:
+          500 0.67rem "DM Mono",
+          monospace;
+        white-space: nowrap;
+        text-transform: uppercase;
+      }
+      .timeline-note {
+        margin: 27px 0 0;
+        padding: 17px 19px;
+        border-left: 4px solid var(--clay);
+        background: #fffefa;
+        color: #4d5d58;
+        font-size: 0.86rem;
+      }
+      .choose {
+        background: var(--white);
+      }
+      .choose-grid {
+        display: grid;
+        grid-template-columns: 0.8fr 1.2fr;
+        gap: 55px;
+        align-items: start;
+      }
+      .choose-intro {
+        padding: 30px;
+        background: var(--pine);
+        color: #fff;
+      }
+      .choose-intro .eyebrow {
+        color: var(--lime);
+      }
+      .choose-intro h2 {
+        font-size: 2.25rem;
+      }
+      .choose-intro p {
+        color: #ccddd3;
+        font-size: 0.9rem;
+      }
+      .why-list {
+        border-top: 1px solid var(--line);
+      }
+      .why {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 18px;
+        padding: 22px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .why b {
+        color: var(--clay);
+        font:
+          500 0.72rem "DM Mono",
+          monospace;
+      }
+      .why h3 {
+        margin: 0 0 5px;
+        font-size: 1rem;
+      }
+      .why p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
+      .final {
+        padding: 87px 0;
+        background: var(--pine);
+        color: white;
+        text-align: center;
+      }
+      .final .eyebrow {
+        color: var(--lime);
+      }
+      .final h2 {
+        max-width: 760px;
+        margin: 0 auto 16px;
+      }
+      .final p {
+        max-width: 625px;
+        margin: 0 auto;
+        color: #ceded4;
+      }
+      .final .button {
+        margin-top: 29px;
+      }
+      .form-wrap {
+        display: none;
+      }
+      .disclaimer {
+        max-width: 720px;
+        margin: 30px auto 0;
+        color: #b4c8bc;
+        font-size: 0.67rem;
+        line-height: 1.55;
+      }
+      footer {
+        padding: 27px 0;
+        background: #0a1412;
+        color: #afc0b6;
+        font-size: 0.76rem;
+      }
+      .foot {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+      }
+      .rise {
+        animation: rise 0.7s ease both;
+      }
+      .rise:nth-child(2) {
+        animation-delay: 0.12s;
+      }
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @media (max-width: 850px) {
+        .vsl-wrap,
+        .case-grid,
+        .founder-grid,
+        .framework-grid,
+        .choose-grid {
+          grid-template-columns: 1fr;
+        }
+        .case-visual {
+          min-height: 300px;
+        }
+        .framework-intro {
+          position: static;
+        }
+        .navlinks {
+          display: none;
+        }
+        .portrait-wrap {
+          margin: auto;
+        }
+        .choose-intro {
+          max-width: 520px;
+        }
+        .step {
+          grid-template-columns: 56px 1fr;
+        }
+        .step time {
+          grid-column: 2;
+        }
+        .case-copy {
+          padding: 35px;
+        }
+        .video-stage, .video-embed { min-height: 320px; }
+      }
+      @media (max-width: 560px) {
+        .shell {
+          width: min(100% - 28px, 1130px);
+        }
+        section {
+          padding: 64px 0;
+        }
+        .hero {
+          padding: 54px 0 62px;
+        }
+        h1 {
+          font-size: 2.55rem;
+        }
+        .vsl-wrap {
+          margin-top: 35px;
+        }
+        .discover {
+          padding: 29px 23px;
+        }
+        .case-copy {
+          padding: 28px 23px;
+        }
+        .case-visual {
+          padding: 23px;
+        }
+        .step {
+          gap: 13px;
+          grid-template-columns: 46px 1fr;
+        }
+        .step-letter {
+          font-size: 2.55rem;
+        }
+        .foot {
+          display: block;
+        }
+        .foot span {
+          display: block;
+          margin-top: 6px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        *,
+        ::before,
+        ::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="nav">
+      <div class="shell navin">
+        <a class="brand" href="index.html" aria-label="Cimulink home"
+          ><img
+            src="cimulink clean only logo - without background.svg"
+            alt=""><span>Cimulink</span></a
+        >
+        <nav class="navlinks" aria-label="Page navigation">
+          <a href="#scenarios">Scenarios</a><a href="#founder">About</a
+          ><a href="#impact">Our approach</a>
+        </nav>
+        <a class="button" href="#strategy"
+          >Book a strategy session <span>→</span></a
+        >
+      </div>
+    </header>
+    <main>
+      <section class="hero">
+        <div class="shell">
+          <div class="hero-copy rise">
+            <p class="eyebrow">For manufacturing businesses</p>
+            <h1>Build a factory that runs with less chasing.</h1>
+            <p>
+              Move toward a clearer operating rhythm in 90-180 days - without
+              relying on scattered Excel sheets or becoming the person every
+              decision waits for.
+            </p>
+            <a class="button" href="#strategy"
+              >Book your operational visibility assessment <span>→</span></a
+            >
+          </div>
+          <div class="vsl-wrap">
+            <div class="video-stage">
+              <iframe class="video-embed" src="https://www.youtube-nocookie.com/embed/lYBCsiugiMg" title="Manufacturing operations walkthrough" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <aside class="discover">
+              <p class="eyebrow">What you'll discover on the call</p>
+              <h3>A practical first step, not a feature tour.</h3>
+              <ul>
+                <li>
+                  Where operational leakages may be costing time and money
+                </li>
+                <li>Opportunities to reduce manual processes by 30-50%</li>
+                <li>Ways to reduce spreadsheet dependency by up to 80-90%</li>
+                <li>
+                  How to improve inventory accuracy and operational visibility
+                </li>
+                <li>A practical 90-120 day implementation roadmap</li>
+              </ul>
+              <p class="small">
+                Potential improvements depend on the current process, data
+                quality, scope and team adoption.
+              </p>
+            </aside>
+          </div>
+        </div>
+      </section>
+      <section id="scenarios">
+        <div class="shell">
+          <div class="story-head">
+            <p class="eyebrow">Three manufacturing stories</p>
+            <h2>Start with the one problem you recognise.</h2>
+            <p>
+              Each scenario follows one operational question from uncertainty to
+              a clearer next action. They are representative ERPNext
+              implementation scenarios, not claims about named customer
+              engagements.
+            </p>
+          </div>
+          <article class="case">
+            <div class="case-grid">
+              <div class="case-visual">
+                <img class="case-art" src="assets/photos/case-packaging-control.png" alt="Packaging production line with connected operations">
+                <span class="case-number">CASE STUDY / 01</span>
+                <div>
+                  <div class="dash">
+                    <div class="dash-title">Production control view</div>
+                    <div class="dash-row">
+                      <span>Line 2 plan vs. actual</span><b>82%</b>
+                    </div>
+                    <div class="dash-row">
+                      <span>Critical resin</span><b>1.5 days</b>
+                    </div>
+                    <div class="dash-row good">
+                      <span>Available finished stock</span><b>Live</b>
+                    </div>
+                  </div>
+                  <p class="case-caption">
+                    From separate departmental files to one operating view.
+                  </p>
+                </div>
+              </div>
+              <div class="case-copy">
+                <p class="case-label">
+                  Repetitive &amp; packaging manufacturing
+                </p>
+                <h2>From Excel sheets to a factory that runs on one system.</h2>
+                <p class="location">
+                  Representative packaging manufacturer scenario
+                </p>
+                <p>
+                  Production cannot see what stores has. Sales cannot see what
+                  production can commit. Management receives a version of the
+                  numbers only after the moment to act has passed.
+                </p>
+                <p>
+                  This reference implementation connects sales, production,
+                  inventory and accounts around the shop-floor workflow - so the
+                  system reflects the work instead of becoming another
+                  spreadsheet to maintain.
+                </p>
+                <div class="impact-list">
+                  <strong
+                    >What the operating view is designed to change:</strong
+                  >
+                  <ul>
+                    <li>
+                      Reports that once needed manual compilation update from
+                      live transactions
+                    </li>
+                    <li>
+                      Stock position is visible before customer commitments are
+                      made
+                    </li>
+                    <li>
+                      Leaders can review the business from exceptions instead of
+                      chasing updates
+                    </li>
+                  </ul>
+                </div>
+                <a class="button" href="#strategy"
+                  >Discuss packaging operations <span>→</span></a
+                >
+              </div>
+            </div>
+          </article>
+          <article class="case">
+            <div class="case-grid">
+              <div class="case-visual">
+                <img class="case-art" src="assets/photos/case-industrial-order-visibility.png" alt="Industrial pump assembly with connected order dependencies">
+                <span class="case-number">CASE STUDY / 02</span>
+                <div>
+                  <div class="dash">
+                    <div class="dash-title">Order dependency view</div>
+                    <div class="dash-row">
+                      <span>SO-2026-0114</span><b>At risk</b>
+                    </div>
+                    <div class="dash-row">
+                      <span>Motor 15 kW</span><b>2 short</b>
+                    </div>
+                    <div class="dash-row good">
+                      <span>Next action</span><b>Expedite PO</b>
+                    </div>
+                  </div>
+                  <p class="case-caption">
+                    See why a promised date is at risk before the customer
+                    calls.
+                  </p>
+                </div>
+              </div>
+              <div class="case-copy">
+                <p class="case-label">Make-to-order industrial manufacturing</p>
+                <h2>
+                  From “let me check” to an answer the team can stand behind.
+                </h2>
+                <p class="location">
+                  Representative industrial assembly scenario
+                </p>
+                <p>
+                  For pumps, skids and custom assemblies, a delivery date
+                  depends on material, supplier promises, work orders, testing
+                  and dispatch. Without one connected picture, the answer is a
+                  chain of calls.
+                </p>
+                <p>
+                  This reference implementation makes the dependency visible:
+                  what is missing, which supplier delay matters, what work is
+                  waiting, and which customer commitment needs attention.
+                </p>
+                <div class="impact-list">
+                  <strong
+                    >What the operating view is designed to change:</strong
+                  >
+                  <ul>
+                    <li>
+                      Customer commitments are linked to material and production
+                      dependencies
+                    </li>
+                    <li>
+                      Shortages are seen in terms of the order they affect
+                    </li>
+                    <li>
+                      Teams manage exceptions and actions, not a long list of
+                      reports
+                    </li>
+                  </ul>
+                </div>
+                <a class="button" href="#strategy"
+                  >Discuss make-to-order operations <span>→</span></a
+                >
+              </div>
+            </div>
+          </article>
+          <article class="case">
+            <div class="case-grid">
+              <div class="case-visual">
+                <img class="case-art" src="assets/photos/case-jewellery-traceability.png" alt="Jewellery materials arranged for high-value inventory traceability">
+                <span class="case-number">CASE STUDY / 03</span>
+                <div>
+                  <div class="dash">
+                    <div class="dash-title">High-value material trace</div>
+                    <div class="dash-row">
+                      <span>Gold issued this week</span><b>750 g</b>
+                    </div>
+                    <div class="dash-row">
+                      <span>With job workers</span><b>220 g</b>
+                    </div>
+                    <div class="dash-row good">
+                      <span>Wastage exception</span><b>1 batch</b>
+                    </div>
+                  </div>
+                  <p class="case-caption">
+                    Know where valuable material is - and what needs attention.
+                  </p>
+                </div>
+              </div>
+              <div class="case-copy">
+                <p class="case-label">Jewellery manufacturing</p>
+                <h2>High-value inventory without “approximately”.</h2>
+                <p class="location">
+                  Representative jewellery manufacturing scenario
+                </p>
+                <p>
+                  Gold, stones and semi-finished goods move through stores,
+                  artisans, production and job work. When material is valuable,
+                  an unclear register or late wastage calculation is not a small
+                  administrative issue.
+                </p>
+                <p>
+                  This reference implementation follows material by weight,
+                  stage and linked customer order - connecting issue, receipt,
+                  expected return, wastage and approval records.
+                </p>
+                <div class="impact-list">
+                  <strong
+                    >What the operating view is designed to change:</strong
+                  >
+                  <ul>
+                    <li>
+                      Material issued to job work remains traceable until return
+                    </li>
+                    <li>
+                      Wastage can be investigated by production order and stage
+                    </li>
+                    <li>
+                      Purity-wise material position is available without waiting
+                      for a physical count
+                    </li>
+                  </ul>
+                </div>
+                <a class="button" href="#strategy"
+                  >Discuss jewellery operations <span>→</span></a
+                >
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section class="founder" id="founder">
+        <div class="shell founder-grid">
+          <div class="portrait-wrap">
+            <img
+              class="portrait"
+              src="assets/photos/architect.jpeg"
+              alt="Ajay Kaaran Gupta, founder of Cimulink">
+          </div>
+          <div class="founder-copy">
+            <p class="eyebrow">Meet Ajay Kaaran Gupta</p>
+            <h2>Founder, Cimulink<br>Creator of the IMPACT framework</h2>
+            <p class="founder-title">
+              Building dependable systems for businesses that have outgrown
+              guesswork.
+            </p>
+            <p>
+              I started Cimulink after seeing the same pattern in complex
+              operations: capable teams end up spending too much time moving
+              information between people, spreadsheets and disconnected tools.
+              The work becomes harder to run as the business grows.
+            </p>
+            <p>
+              My background is in building reliable, high-performance systems
+              and connecting the data behind day-to-day decisions. At Cimulink,
+              that experience is applied in a practical way: understand the real
+              workflow first, then use system integration and automation to make
+              it easier for the team to run.
+            </p>
+            <p>
+              The goal is not a more impressive software stack. It is an
+              operating picture you can trust, routine work that does not wait
+              for the owner, and a team that can act before small gaps become
+              expensive problems.
+            </p>
+            <a class="button gold" href="#strategy"
+              >Book your free strategy session <span>→</span></a
+            >
+          </div>
+        </div>
+      </section>
+      <section class="framework" id="impact">
+        <div class="shell framework-grid">
+          <div class="framework-intro">
+            <p class="eyebrow">How the IMPACT framework works</p>
+            <h2>How the IMPACT framework works.</h2>
+            <p>
+              The stages are simple by design. Each one prepares the ground for
+              the next, so the system does not get ahead of the process.
+            </p>
+            <img class="impact-art" src="assets/photos/impact-framework-flow.png" alt="A visual flow from disconnected manufacturing work to a connected operating rhythm">
+            <a class="button" href="#strategy"
+              >Book your free strategy session <span>→</span></a
+            >
+          </div>
+          <div>
+            <div class="steps">
+              <article class="step">
+                <div class="step-letter">I</div>
+                <div>
+                  <h3>Investigate operational leakages</h3>
+                  <p>
+                    Map where time, inventory, money and information are
+                    slipping through the cracks. Focus the work on the
+                    bottlenecks creating the most friction.
+                  </p>
+                </div>
+                <time>1-2 weeks</time>
+              </article>
+              <article class="step">
+                <div class="step-letter">M</div>
+                <div>
+                  <h3>Map the real workflow</h3>
+                  <p>
+                    Simplify and standardise how work moves before automating
+                    it. The aim is fewer avoidable handoffs, delays and
+                    workarounds.
+                  </p>
+                </div>
+                <time>1-3 weeks</time>
+              </article>
+              <article class="step">
+                <div class="step-letter">P</div>
+                <div>
+                  <h3>Put systems and data together</h3>
+                  <p>
+                    Connect the order, inventory, production, procurement, sales
+                    and finance flows that must agree for the operation to run
+                    clearly.
+                  </p>
+                </div>
+                <time>4-8 weeks</time>
+              </article>
+              <article class="step">
+                <div class="step-letter">A</div>
+                <div>
+                  <h3>Activate operational visibility</h3>
+                  <p>
+                    Give leaders live signals on customer risk, shortages,
+                    exceptions and decisions that need their attention.
+                  </p>
+                </div>
+                <time>1-2 weeks</time>
+              </article>
+              <article class="step">
+                <div class="step-letter">C</div>
+                <div>
+                  <h3>Control routine work</h3>
+                  <p>
+                    Set up approvals, alerts and reports so routine coordination
+                    reaches the right person without defaulting to the owner.
+                  </p>
+                </div>
+                <time>2-4 weeks</time>
+              </article>
+              <article class="step">
+                <div class="step-letter">T</div>
+                <div>
+                  <h3>Transfer the operating rhythm</h3>
+                  <p>
+                    Train the team, review adoption and strengthen the daily
+                    habits that make the operating picture useful after go-live.
+                  </p>
+                </div>
+                <time>Throughout</time>
+              </article>
+            </div>
+            <p class="timeline-note">
+              <strong>Typical project:</strong> about 10-16 weeks, depending on
+              process complexity, data readiness and scope. Several stages
+              overlap in a practical rollout.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="choose">
+        <div class="shell choose-grid">
+          <div class="choose-intro">
+            <p class="eyebrow">Why manufacturers choose us</p>
+            <h2>The system should fit the factory.</h2>
+            <p>
+              A useful implementation makes operating work clearer. It should
+              not add a generic checklist that the team learns to work around.
+            </p>
+            <a class="button gold" href="#strategy"
+              >Book your strategy session <span>→</span></a
+            >
+          </div>
+          <div class="why-list">
+            <article class="why">
+              <b>01</b>
+              <div>
+                <h3>Find the leak before choosing the tool</h3>
+                <p>
+                  We start by finding where stock, cash, time and approvals are
+                  leaking, so the solution is built around a real operating
+                  problem.
+                </p>
+              </div>
+            </article>
+            <article class="why">
+              <b>02</b>
+              <div>
+                <h3>Build around how your factory works</h3>
+                <p>
+                  Workflows are designed around the production reality, not
+                  forced into generic presets that the team will bypass.
+                </p>
+              </div>
+            </article>
+            <article class="why">
+              <b>03</b>
+              <div>
+                <h3>Turn data into a daily decision tool</h3>
+                <p>
+                  Dashboards, approvals, reports and alerts should help the team
+                  act on information instead of spending the day collecting it.
+                </p>
+              </div>
+            </article>
+            <article class="why">
+              <b>04</b>
+              <div>
+                <h3>Reduce owner dependency with the right controls</h3>
+                <p>
+                  Control does not require the owner to approve or coordinate
+                  every routine transaction.
+                </p>
+              </div>
+            </article>
+            <article class="why">
+              <b>05</b>
+              <div>
+                <h3>Stay close to the rollout</h3>
+                <p>
+                  We take on a limited number of engagements so the work stays
+                  connected to the business outcome, not just the go-live date.
+                </p>
+              </div>
+            </article>
+            <article class="why">
+              <b>06</b>
+              <div>
+                <h3>Keep improving after the first release</h3>
+                <p>
+                  Adoption and visibility are reviewed after launch. The goal is
+                  a working operating rhythm, not a system that simply exists.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="final" id="strategy">
+        <div class="shell">
+          <p class="eyebrow">
+            Schedule your free operational visibility strategy session
+          </p>
+          <h2>
+            Start with the one question your factory should answer faster.
+          </h2>
+          <p>
+            Bring the problem that is causing the most chasing today. We will
+            map the first sensible next step together.
+          </p>
+          <a class="button gold" href="https://calendly.com/ajay_k_gupta/30min"
+            >Book your free operational visibility assessment <span>→</span></a
+          >
+          <p class="disclaimer">
+            The scenarios and improvement ranges on this page are illustrative.
+            Actual outcomes, timing and scope depend on the business process,
+            data, implementation choices and team adoption.
+          </p>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="shell foot">
+        <span
+          ><a href="index.html"><strong>Cimulink</strong></a> · Connected
+          business systems for manufacturers.</span
+        ><span>© <span id="year"></span> Cimulink</span>
+      </div>
+    </footer>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
