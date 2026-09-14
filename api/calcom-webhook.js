@@ -45,6 +45,7 @@ module.exports = async function handler(req, res) {
 
   const raw = await readBody(req);
   if (!verifySignature(raw, req.headers["x-cal-signature-256"], process.env.CALCOM_WEBHOOK_SECRET)) {
+    console.warn("Cal.com webhook rejected: invalid signature");
     return json(res, 401, { error: "Invalid signature" });
   }
 
@@ -58,11 +59,8 @@ module.exports = async function handler(req, res) {
 
   const uid = payload.uid || payload.bookingUid || payload.rescheduleUid || "";
   const status = trigger.includes("CANCEL") ? "Cancelled" : trigger.includes("RESCHEDUL") ? "Rescheduled" : "Booked";
-  const lead = {
-    doctype: "CRM Lead",
-    first_name: String(attendee.name || payload.booker?.name || "Cal.com Prospect").split(/\s+/)[0],
-    email,
-    source: "Cal.com – Manufacturing VSL",
+  console.info("Cal.com webhook accepted", { trigger, booking_uid: uid || "unknown" });
+  const bookingFields = {
     custom_booking_status: status,
     custom_cal_booking_uid: uid,
     custom_cal_event_type: payload.type || payload.title || "manufacturing-strategy",
@@ -76,8 +74,20 @@ module.exports = async function handler(req, res) {
     const found = await frappe(`/api/resource/CRM%20Lead?filters=${filters}&fields=${encodeURIComponent(JSON.stringify(["name"]))}&limit_page_length=2`);
     const rows = found.data || found;
     const match = Array.isArray(rows) ? rows[0] : null;
-    if (match) await frappe(`/api/resource/CRM%20Lead/${encodeURIComponent(match.name)}`, { method: "PUT", body: JSON.stringify(lead) });
-    else await frappe("/api/resource/CRM%20Lead", { method: "POST", body: JSON.stringify(lead) });
+    if (match) {
+      await frappe(`/api/resource/CRM%20Lead/${encodeURIComponent(match.name)}`, { method: "PUT", body: JSON.stringify(bookingFields) });
+    } else {
+      await frappe("/api/resource/CRM%20Lead", {
+        method: "POST",
+        body: JSON.stringify({
+          doctype: "CRM Lead",
+          first_name: String(attendee.name || payload.booker?.name || "Cal.com Prospect").split(/\s+/)[0],
+          email,
+          source: "Website – Manufacturing VSL",
+          ...bookingFields,
+        }),
+      });
+    }
     return json(res, 200, { ok: true });
   } catch (error) {
     console.error("Cal.com webhook CRM update failed", error.message);
