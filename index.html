@@ -882,7 +882,7 @@
           </div>
           <div class="vsl-wrap">
             <div class="video-stage">
-              <iframe class="video-embed" src="https://www.youtube-nocookie.com/embed/lYBCsiugiMg" title="Manufacturing operations walkthrough" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              <iframe id="manufacturing-vsl-video" class="video-embed" src="https://www.youtube-nocookie.com/embed/lYBCsiugiMg?enablejsapi=1&rel=0" title="Manufacturing operations walkthrough" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
             <aside class="discover">
               <p class="eyebrow">What you'll discover on the call</p>
@@ -1386,11 +1386,14 @@
         const form = document.getElementById("lead-capture-form");
         const status = document.getElementById("lead-form-status");
         const closeButton = modal.querySelector(".modal-close");
+        const posthogQueue = [];
         let lastTrigger = null;
 
         function posthogCapture(event, properties) {
           if (window.posthog && typeof window.posthog.capture === "function") {
             window.posthog.capture(event, properties || {});
+          } else {
+            posthogQueue.push([event, properties || {}]);
           }
         }
 
@@ -1519,6 +1522,59 @@
           }
         });
 
+        function setupVideoTracking() {
+          const frame = document.getElementById("manufacturing-vsl-video");
+          if (!frame) return;
+          const milestones = new Set();
+          let player;
+          let progressTimer;
+          const videoProperties = { video_id: "lYBCsiugiMg", video_title: "Manufacturing operations walkthrough" };
+
+          function trackProgress() {
+            if (!player || typeof player.getDuration !== "function") return;
+            const duration = player.getDuration();
+            const current = player.getCurrentTime();
+            if (!duration || !current) return;
+            const percent = Math.min(100, Math.floor((current / duration) * 100));
+            [25, 50, 75].forEach((milestone) => {
+              if (percent >= milestone && !milestones.has(milestone)) {
+                milestones.add(milestone);
+                posthogCapture("manufacturing_vsl_video_progress", { ...videoProperties, watch_percent: milestone });
+              }
+            });
+          }
+
+          window.onYouTubeIframeAPIReady = function () {
+            player = new YT.Player(frame, {
+              events: {
+                onStateChange: function (playerEvent) {
+                  if (playerEvent.data === 1) {
+                    if (!milestones.has(0)) {
+                      milestones.add(0);
+                      posthogCapture("manufacturing_vsl_video_started", videoProperties);
+                    }
+                    clearInterval(progressTimer);
+                    progressTimer = setInterval(trackProgress, 1000);
+                  }
+                  if (playerEvent.data === 0) {
+                    clearInterval(progressTimer);
+                    if (!milestones.has(100)) {
+                      milestones.add(100);
+                      posthogCapture("manufacturing_vsl_video_completed", { ...videoProperties, watch_percent: 100 });
+                    }
+                  }
+                },
+              },
+            });
+          };
+
+          const youtubeApi = document.createElement("script");
+          youtubeApi.src = "https://www.youtube.com/iframe_api";
+          document.head.appendChild(youtubeApi);
+        }
+
+        setupVideoTracking();
+
         // PostHog project tokens are public browser-side identifiers; keep Frappe/Cal secrets server-side.
         window.POSTHOG_PROJECT_KEY = window.POSTHOG_PROJECT_KEY || "phc_uUG9DfjKwphRbomCnD2B6nD5BGHeJkE2u9rXsnAsirSu";
         window.POSTHOG_HOST = window.POSTHOG_HOST || "https://us.i.posthog.com";
@@ -1527,6 +1583,7 @@
           script.src = "https://us.i.posthog.com/static/array.js";
           script.onload = function () {
             window.posthog.init(window.POSTHOG_PROJECT_KEY, { api_host: window.POSTHOG_HOST || "https://us.i.posthog.com" });
+            posthogQueue.splice(0).forEach(([event, properties]) => window.posthog.capture(event, properties));
           };
           document.head.appendChild(script);
         }
