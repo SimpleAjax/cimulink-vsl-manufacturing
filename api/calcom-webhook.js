@@ -80,6 +80,8 @@ module.exports = async function handler(req, res) {
   const uid = payload.uid || payload.bookingUid || payload.rescheduleUid || "";
   const status = trigger.includes("CANCEL") ? "Cancelled" : trigger.includes("RESCHEDUL") ? "Rescheduled" : "Booked";
   console.info("Cal.com webhook accepted", { trigger, booking_uid: uid || "unknown" });
+  const additionalNotes = String(payload.additionalNotes || payload.notes || "").trim().slice(0, 2000);
+  const changeReason = calChangeReason(payload);
   const bookingFields = {
     custom_booking_status: status,
     custom_cal_booking_uid: uid,
@@ -87,8 +89,8 @@ module.exports = async function handler(req, res) {
     custom_call_start_at: frappeDateTime(payload.startTime),
     custom_call_end_at: frappeDateTime(payload.endTime),
     custom_call_meeting_url: payload.metadata?.videoCallUrl || payload.videoCallUrl || payload.location || "",
-    custom_cal_additional_notes: String(payload.additionalNotes || payload.notes || "").trim().slice(0, 2000),
-    custom_cal_change_reason: calChangeReason(payload),
+    ...(additionalNotes ? { custom_cal_additional_notes: additionalNotes } : {}),
+    ...(changeReason ? { custom_cal_change_reason: changeReason } : {}),
   };
 
   try {
