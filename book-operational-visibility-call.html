@@ -19,62 +19,56 @@
       .brand { display:inline-flex; align-items:center; gap:9px; color:var(--pine); font-weight:800; text-decoration:none; }
       .brand img { width:29px; height:29px; object-fit:contain; }
       .eyebrow { margin:0 0 15px; color:var(--pine); font:500 .72rem/1 "DM Mono",monospace; letter-spacing:.11em; text-transform:uppercase; }
-      h1,h2 { font-family:"Roboto Slab",Georgia,serif; letter-spacing:-.045em; line-height:1.15; }
-      h1 { max-width:760px; margin:0 0 18px; font-size:clamp(2.25rem,5vw,4.3rem); }
-      h2 { margin:0 0 13px; font-size:clamp(1.8rem,4vw,2.7rem); }
-      .hero { padding:78px 0 52px; }
-      .intro { max-width:720px; color:var(--muted); font-size:1.08rem; }
-      .columns { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start; padding:30px 0 58px; }
-      .card { padding:29px; background:var(--white); border:1px solid var(--line); }
-      .card h2 { font-size:1.5rem; }
-      .card ul { margin:0; padding-left:20px; }
-      .card li { margin:0 0 12px; }
-      .calendar { margin:0 0 44px; padding:29px; background:#fff; border:1px solid var(--line); }
-      #my-cal-inline { min-height:720px; }
+      h1,h2 { font-family:"Roboto Slab",Georgia,serif; letter-spacing:-.04em; line-height:1.18; }
+      h1 { margin:0 0 12px; font-size:clamp(2rem,4vw,3.1rem); }
+      h2 { margin:0 0 13px; font-size:clamp(1.45rem,3vw,2rem); }
+      .intro { margin:0; color:var(--muted); font-size:1rem; }
+      .booking-layout { display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr); gap:32px; align-items:start; padding:52px 0; }
+      .summary { padding:4px 5px; }
+      .summary-block { padding:23px 0; border-top:1px solid var(--line); }
+      .summary-block:first-of-type { margin-top:27px; }
+      .summary-block h2 { font-size:1.3rem; }
+      .summary ul { margin:0; padding-left:19px; }
+      .summary li { margin:0 0 10px; color:var(--muted); font-size:.92rem; }
+      .calendar { padding:25px; background:#fff; border:1px solid var(--line); box-shadow:0 12px 40px #10231f0d; }
+      #my-cal-inline { min-height:680px; }
       .fallback { margin:15px 0 0; color:var(--muted); font-size:.83rem; }
       .privacy { margin:0 auto 50px; color:var(--muted); font-size:.75rem; text-align:center; }
       footer { padding:27px 0; background:#0a1412; color:#afc0b6; font-size:.76rem; }
-      @media (max-width:760px) { .columns { grid-template-columns:1fr; gap:25px; } .hero { padding-top:52px; } #my-cal-inline { min-height:780px; } }
+      @media (max-width:800px) { .booking-layout { grid-template-columns:1fr; gap:30px; padding:38px 0; } .calendar { padding:18px; } #my-cal-inline { min-height:780px; } }
     </style>
   </head>
   <body>
     <header class="nav"><div class="shell"><a class="brand" href="index.html"><img src="cimulink clean only logo - without background.svg" alt=""> Cimulink</a></div></header>
     <main>
-      <section class="hero"><div class="shell">
+      <section class="shell booking-layout">
+        <div class="summary">
         <p class="eyebrow">Manufacturing operations discovery call</p>
-        <h1>Schedule Your Manufacturing Operations Discovery Call</h1>
-        <p class="intro">Get a clearer view of the operational gaps affecting control, delivery, and profitability. This is a focused working conversation—not a software demo or a commitment to a large ERP programme.</p>
-      </div></section>
-      <section class="shell columns">
-        <article class="card">
-          <p class="eyebrow">What we will explore</p>
-          <h2>Understand how work moves today.</h2>
+        <h1>A focused conversation about your operations.</h1>
+        <p class="intro">A practical first look at where work, information, and decisions are getting stuck.</p>
+        <section class="summary-block">
+          <p class="eyebrow">What we’ll explore</p>
           <ul>
-            <li>Sales, inventory, production, procurement, and reporting processes.</li>
-            <li>Operational leakages, duplicated effort, and delays affecting profitability.</li>
-            <li>Where the business depends too heavily on the founder for answers or approvals.</li>
-            <li>Gaps in stock, production, order, and delivery visibility.</li>
-            <li>Your ERP readiness and digital maturity.</li>
-            <li>Whether ERPNext, Odoo, targeted AI automation, or a staged combination is appropriate.</li>
+            <li>Inventory, production, procurement, and reporting visibility.</li>
+            <li>Leakages, delays, and founder-dependent decisions.</li>
+            <li>Your readiness for ERP and targeted automation.</li>
           </ul>
-        </article>
-        <article class="card">
-          <p class="eyebrow">What you will leave with</p>
-          <h2>A sensible first next step.</h2>
+        </section>
+        <section class="summary-block">
+          <p class="eyebrow">What you’ll leave with</p>
           <ul>
-            <li>A clearer view of the operational issue worth solving first.</li>
-            <li>An initial view of the systems, process changes, and information needed.</li>
-            <li>A practical roadmap using the DRIVE Framework.</li>
-            <li>Questions to take back to your operations and leadership team.</li>
+            <li>Clarity on the first operational issue worth solving.</li>
+            <li>A sensible next step and a practical roadmap.</li>
           </ul>
-        </article>
-      </section>
-      <section class="shell calendar">
-        <p class="eyebrow">Choose a convenient time</p>
-        <h2>Book your discovery call</h2>
-        <p class="intro">Select a time below. Please choose the timezone shown by the calendar.</p>
-        <div id="my-cal-inline"></div>
-        <p class="fallback">Having trouble with the calendar? <a href="https://cal.com/ajay-kaaran-gupta/manufacturing-strategy" target="_blank" rel="noopener">Open the booking page in a new tab.</a></p>
+        </section>
+        </div>
+        <section class="calendar">
+          <p class="eyebrow">Book discovery call</p>
+          <h2>Choose a convenient time.</h2>
+          <p class="intro">Select a time below.</p>
+          <div id="my-cal-inline"></div>
+          <p class="fallback">Having trouble with the calendar? <a href="https://cal.com/ajay-kaaran-gupta/manufacturing-strategy" target="_blank" rel="noopener">Open the booking page in a new tab.</a></p>
+        </section>
       </section>
       <p class="shell privacy">By scheduling, you agree that Cimulink may use the details you provide to arrange and follow up on this conversation. Please review the Cimulink Privacy Policy before launch.</p>
     </main>

@@ -679,6 +679,11 @@
         font-size: 0.78rem;
         font-weight: 800;
       }
+      .field-label {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+      }
       .lead-form input {
         width: 100%;
         min-height: 45px;
@@ -1346,15 +1351,15 @@
           Share a few details so we can make your manufacturing operations discovery call useful from the first minute.
         </p>
         <form class="lead-form" id="lead-capture-form" novalidate>
-          <label>Full name <input name="full_name" autocomplete="name" maxlength="120" placeholder="Your name"></label>
+          <label><span class="field-label">Full name</span><input name="full_name" autocomplete="name" maxlength="120" placeholder="Your name"></label>
           <p class="field-error" data-error-for="full_name"></p>
-          <label>Email address <span><span class="required">*</span></span><input name="email" type="email" autocomplete="email" required maxlength="254" placeholder="[email protected]"></label>
+          <label><span class="field-label">Email address <span class="required" aria-hidden="true">*</span></span><input name="email" type="email" autocomplete="email" required maxlength="254" placeholder="[email protected]"></label>
           <p class="field-error" data-error-for="email"></p>
-          <label>Phone number <span><span class="required">*</span></span><input name="phone" type="tel" autocomplete="tel" required inputmode="tel" placeholder="+91 98765 43210"></label>
+          <label><span class="field-label">Phone number <span class="required" aria-hidden="true">*</span></span><input name="phone" type="tel" autocomplete="tel" required inputmode="tel" placeholder="Your phone number"></label>
           <p class="field-error" data-error-for="phone"></p>
-          <label>Company <input name="company" autocomplete="organization" maxlength="140" placeholder="Your manufacturing company"></label>
+          <label><span class="field-label">Company</span><input name="company" autocomplete="organization" maxlength="140" placeholder="Your manufacturing company"></label>
           <p class="field-error" data-error-for="company"></p>
-          <label>Designation <input name="designation" autocomplete="organization-title" maxlength="120" placeholder="Founder, Owner, Operations Head…"></label>
+          <label><span class="field-label">Designation</span><input name="designation" autocomplete="organization-title" maxlength="120" placeholder="Founder, Owner, Operations Head…"></label>
           <p class="field-error" data-error-for="designation"></p>
           <label class="honeypot" aria-hidden="true">Website URL<input name="website_url" tabindex="-1" autocomplete="off"></label>
           <input type="hidden" name="cta_location">
@@ -1390,15 +1395,6 @@
           if (window.posthog && typeof window.posthog.capture === "function") {
             window.posthog.capture(event, properties || {});
           }
-        }
-
-        function normalizePhone(value) {
-          const compact = String(value || "").trim().replace(/[\s().-]/g, "");
-          return compact.startsWith("00") ? "+" + compact.slice(2) : compact;
-        }
-
-        function validInternationalPhone(value) {
-          return /^\+[1-9]\d{7,14}$/.test(normalizePhone(value));
         }
 
         function setError(field, message) {
@@ -1459,14 +1455,14 @@
           const submit = form.querySelector('button[type="submit"]');
           const data = Object.fromEntries(new FormData(form).entries());
           const email = String(data.email || "").trim();
-          const phone = normalizePhone(data.phone);
+          const phone = String(data.phone || "").trim();
           let valid = true;
           if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             setError("email", "Enter a valid email address.");
             valid = false;
           }
-          if (!phone || !/^\+[1-9]\d{7,14}$/.test(phone)) {
-            setError("phone", "Use an international number with country code, for example +91 98765 43210.");
+          if (!phone) {
+            setError("phone", "Enter your phone number.");
             valid = false;
           }
           if (!valid) return;

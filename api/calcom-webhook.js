@@ -68,7 +68,7 @@ module.exports = async function handler(req, res) {
     custom_cal_event_type: payload.type || payload.title || "manufacturing-strategy",
     custom_call_start_at: payload.startTime || "",
     custom_call_end_at: payload.endTime || "",
-    custom_call_meeting_url: payload.videoCallUrl || payload.location || "",
+    custom_call_meeting_url: payload.metadata?.videoCallUrl || payload.videoCallUrl || payload.location || "",
   };
 
   try {

@@ -1,13 +1,4 @@
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_PATTERN = /^\+[1-9]\d{7,14}$/;
-
-function normalizePhone(value) {
-  const input = String(value || "").trim();
-  const compact = input.replace(/[\s().-]/g, "");
-  if (compact.startsWith("00")) return `+${compact.slice(2)}`;
-  return compact;
-}
-
 function clean(value, max = 500) {
   return String(value || "").trim().slice(0, max);
 }
@@ -49,14 +40,9 @@ module.exports = async function handler(req, res) {
   if (clean(body.website_url, 200)) return json(res, 400, { error: "Unable to process this request" });
 
   const email = clean(body.email, 254).toLowerCase();
-  const phone = normalizePhone(body.phone);
+  const phone = clean(body.phone, 40);
   if (!email || !EMAIL_PATTERN.test(email)) return json(res, 422, { field: "email", error: "Enter a valid email address." });
-  if (!phone || !PHONE_PATTERN.test(phone)) {
-    return json(res, 422, {
-      field: "phone",
-      error: "Enter a valid international number with country code, for example +91 98765 43210.",
-    });
-  }
+  if (!phone) return json(res, 422, { field: "phone", error: "Enter your phone number." });
 
   const fullName = clean(body.full_name, 120);
   const nameParts = fullName ? fullName.split(/\s+/) : ["Website Prospect"];
