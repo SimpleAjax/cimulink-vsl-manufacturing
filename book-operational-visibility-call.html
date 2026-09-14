@@ -77,14 +77,32 @@
       // PostHog project tokens are public browser-side identifiers; never place Frappe/Cal secrets here.
       window.POSTHOG_PROJECT_KEY = window.POSTHOG_PROJECT_KEY || "phc_uUG9DfjKwphRbomCnD2B6nD5BGHeJkE2u9rXsnAsirSu";
       window.POSTHOG_HOST = window.POSTHOG_HOST || "https://us.i.posthog.com";
+      const bookingPosthogQueue = [];
       if (window.POSTHOG_PROJECT_KEY) {
         const posthogScript = document.createElement("script");
         posthogScript.src = "https://us.i.posthog.com/static/array.js";
         posthogScript.onload = function () {
           window.posthog.init(window.POSTHOG_PROJECT_KEY, { api_host: window.POSTHOG_HOST });
+          bookingPosthogQueue.splice(0).forEach(([event, properties]) => window.posthog.capture(event, properties));
         };
         document.head.appendChild(posthogScript);
       }
+      const bookingUrlParams = new URLSearchParams(window.location.search);
+      const bookingAttribution = {
+        page_url: window.location.href,
+        utm_source: bookingUrlParams.get("utm_source") || undefined,
+        utm_medium: bookingUrlParams.get("utm_medium") || undefined,
+        utm_campaign: bookingUrlParams.get("utm_campaign") || undefined,
+        utm_content: bookingUrlParams.get("utm_content") || undefined,
+      };
+      function captureBookingEvent(event, properties) {
+        if (window.posthog && typeof window.posthog.capture === "function") {
+          window.posthog.capture(event, properties || {});
+        } else {
+          bookingPosthogQueue.push([event, properties || {}]);
+        }
+      }
+      captureBookingEvent("manufacturing_booking_page_viewed", bookingAttribution);
       (function (C, A, L) {
         let p = function (a, ar) { a.q.push(ar); };
         C.Cal = C.Cal || function () { let a = C.Cal, ar = arguments; a.q = a.q || []; p(a, ar); };
@@ -103,8 +121,18 @@
           config["metadata[website_lead_name]"] = prefill.name;
         }
         C.Cal("inline", { elementOrSelector: "#my-cal-inline", calLink: "ajay-kaaran-gupta/manufacturing-strategy", config });
+        C.Cal("on", { action: "__ready", callback: function () {
+          captureBookingEvent("manufacturing_calendar_viewed", { event_slug: "manufacturing-strategy" });
+        }});
+        C.Cal("on", { action: "bookerViewed", callback: function () {
+          captureBookingEvent("manufacturing_calendar_viewed", { event_slug: "manufacturing-strategy" });
+        }});
         C.Cal("on", { action: "bookingSuccessfulV2", callback: function (event) {
-          if (window.posthog) window.posthog.capture("manufacturing_booking_completed", { booking_uid: event.detail && event.detail.data && event.detail.data.uid, event_slug: "manufacturing-strategy" });
+          captureBookingEvent("manufacturing_booking_completed", {
+            booking_uid: event.detail && event.detail.data && event.detail.data.uid,
+            event_slug: "manufacturing-strategy",
+            ...bookingAttribution,
+          });
           sessionStorage.removeItem("cimulink_booking_prefill");
         }});
         let s = A.createElement("script"); s.async = true; s.src = L + "/embed/embed.js"; A.head.appendChild(s);

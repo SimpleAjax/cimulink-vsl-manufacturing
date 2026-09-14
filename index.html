@@ -1397,6 +1397,17 @@
           }
         }
 
+        function attributionProperties() {
+          const params = new URLSearchParams(window.location.search);
+          return {
+            page_url: window.location.href,
+            utm_source: params.get("utm_source") || undefined,
+            utm_medium: params.get("utm_medium") || undefined,
+            utm_campaign: params.get("utm_campaign") || undefined,
+            utm_content: params.get("utm_content") || undefined,
+          };
+        }
+
         function setError(field, message) {
           const target = form.querySelector(`[data-error-for="${field}"]`);
           if (target) target.textContent = message || "";
@@ -1429,7 +1440,7 @@
           status.textContent = "";
           modal.hidden = false;
           document.body.style.overflow = "hidden";
-          posthogCapture("manufacturing_lead_form_opened", { cta_location: location });
+          posthogCapture("manufacturing_lead_form_opened", { ...attributionProperties(), cta_location: location });
           form.elements.full_name.focus();
         }
 
@@ -1444,8 +1455,8 @@
           trigger.addEventListener("click", (event) => {
             event.preventDefault();
             posthogCapture("manufacturing_book_call_cta_clicked", {
+              ...attributionProperties(),
               cta_location: trigger.dataset.bookingCta,
-              page_url: window.location.href,
             });
             openModal(trigger);
           });
@@ -1506,12 +1517,28 @@
               }
               throw new Error(result.error || "Your details could not be saved. Please wait a minute and try again.");
             }
-            posthogCapture("manufacturing_lead_form_submitted", { cta_location: data.cta_location });
+            posthogCapture("manufacturing_lead_form_submitted", {
+              ...attributionProperties(),
+              cta_location: data.cta_location,
+              form_name: "manufacturing_lead_capture",
+              utm_source: data.utm_source || undefined,
+              utm_medium: data.utm_medium || undefined,
+              utm_campaign: data.utm_campaign || undefined,
+              utm_content: data.utm_content || undefined,
+            });
             sessionStorage.setItem("cimulink_booking_prefill", JSON.stringify({
               name: String(data.full_name || "").trim(),
               email: data.email,
+              utm_source: data.utm_source || "",
+              utm_medium: data.utm_medium || "",
+              utm_campaign: data.utm_campaign || "",
+              utm_content: data.utm_content || "",
             }));
-            window.location.href = "book-operational-visibility-call.html";
+            const bookingUrl = new URL("book-operational-visibility-call.html", window.location.href);
+            ["utm_source", "utm_medium", "utm_campaign", "utm_content"].forEach((key) => {
+              if (data[key]) bookingUrl.searchParams.set(key, data[key]);
+            });
+            window.location.href = bookingUrl.toString();
           } catch (error) {
             status.textContent = error.message === "Failed to fetch"
               ? "We could not reach the booking service. Check your connection, then try again."
