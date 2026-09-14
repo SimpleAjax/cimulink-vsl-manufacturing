@@ -76,6 +76,7 @@ module.exports = async function handler(req, res) {
     custom_call_start_at: frappeDateTime(payload.startTime),
     custom_call_end_at: frappeDateTime(payload.endTime),
     custom_call_meeting_url: payload.metadata?.videoCallUrl || payload.videoCallUrl || payload.location || "",
+    custom_cal_additional_notes: String(payload.additionalNotes || payload.notes || "").trim().slice(0, 2000),
   };
 
   try {
