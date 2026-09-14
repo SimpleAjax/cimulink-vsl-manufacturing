@@ -22,6 +22,13 @@ function verifySignature(raw, signature, secret) {
   return supplied.length === expected.length && crypto.timingSafeEqual(Buffer.from(supplied), Buffer.from(expected));
 }
 
+function frappeDateTime(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toISOString().slice(0, 19).replace("T", " ");
+}
+
 async function frappe(path, options = {}) {
   const response = await fetch(`${process.env.FRAPPE_BASE_URL}${path}`, {
     ...options,
@@ -64,8 +71,8 @@ module.exports = async function handler(req, res) {
     custom_booking_status: status,
     custom_cal_booking_uid: uid,
     custom_cal_event_type: payload.type || payload.title || "manufacturing-strategy",
-    custom_call_start_at: payload.startTime || "",
-    custom_call_end_at: payload.endTime || "",
+    custom_call_start_at: frappeDateTime(payload.startTime),
+    custom_call_end_at: frappeDateTime(payload.endTime),
     custom_call_meeting_url: payload.metadata?.videoCallUrl || payload.videoCallUrl || payload.location || "",
   };
 

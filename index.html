@@ -1399,6 +1399,17 @@
           if (target) target.textContent = message || "";
         }
 
+        function emailError(value) {
+          const email = String(value || "").trim();
+          if (!email) return "Enter your email address so we can send your booking details.";
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return "Use an email in the format name@company.com.";
+          return "";
+        }
+
+        function phoneError(value) {
+          return String(value || "").trim() ? "" : "Enter your phone number so we can contact you if needed.";
+        }
+
         function fillAttribution(ctaLocation) {
           const params = new URLSearchParams(window.location.search);
           form.elements.cta_location.value = ctaLocation || "unknown";
@@ -1445,6 +1456,11 @@
           if (event.key === "Escape" && !modal.hidden) closeModal();
         });
 
+        form.elements.email.addEventListener("blur", () => setError("email", emailError(form.elements.email.value)));
+        form.elements.phone.addEventListener("blur", () => setError("phone", phoneError(form.elements.phone.value)));
+        form.elements.email.addEventListener("input", () => { if (form.elements.email.value.trim()) setError("email", ""); });
+        form.elements.phone.addEventListener("input", () => { if (form.elements.phone.value.trim()) setError("phone", ""); });
+
         form.addEventListener("submit", async (event) => {
           event.preventDefault();
           ["full_name", "email", "phone", "company", "designation"].forEach((field) => setError(field, ""));
@@ -1454,12 +1470,14 @@
           const email = String(data.email || "").trim();
           const phone = String(data.phone || "").trim();
           let valid = true;
-          if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            setError("email", "Enter a valid email address.");
+          const currentEmailError = emailError(email);
+          const currentPhoneError = phoneError(phone);
+          if (currentEmailError) {
+            setError("email", currentEmailError);
             valid = false;
           }
-          if (!phone) {
-            setError("phone", "Enter your phone number.");
+          if (currentPhoneError) {
+            setError("phone", currentPhoneError);
             valid = false;
           }
           if (!valid) return;
@@ -1476,13 +1494,21 @@
             });
             const result = await response.json().catch(() => ({}));
             if (!response.ok) {
-              setError(result.field || "phone", result.error || "Please check your details and try again.");
-              throw new Error(result.error || "Lead creation failed");
+              if (result.field) {
+                setError(result.field, result.error || "Please check this field and try again.");
+                submit.disabled = false;
+                submit.removeAttribute("aria-busy");
+                submit.textContent = "Continue to choose a time →";
+                return;
+              }
+              throw new Error(result.error || "Your details could not be saved. Please wait a minute and try again.");
             }
             posthogCapture("manufacturing_lead_form_submitted", { cta_location: data.cta_location });
             window.location.href = "book-operational-visibility-call.html";
           } catch (error) {
-            status.textContent = error.message === "Lead creation failed" ? "We could not save your details. Please try again." : error.message;
+            status.textContent = error.message === "Failed to fetch"
+              ? "We could not reach the booking service. Check your connection, then try again."
+              : error.message;
             submit.disabled = false;
             submit.removeAttribute("aria-busy");
             submit.textContent = "Continue to choose a time →";

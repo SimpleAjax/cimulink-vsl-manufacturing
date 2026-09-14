@@ -85,6 +85,8 @@ module.exports = async function handler(req, res) {
     return json(res, 200, { ok: true, lead_name: saved.name || match?.name });
   } catch (error) {
     console.error("Frappe lead request failed", error.message);
-    return json(res, 502, { error: "We could not save your details. Please try again." });
+    return json(res, 502, {
+      error: "Our CRM could not save your details right now. Please wait a minute and try again.",
+    });
   }
 }
