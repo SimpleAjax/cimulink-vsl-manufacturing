@@ -29,3 +29,13 @@ Tell us where operations are getting stuck
 Share a few details so we can make your manufacturing operations discovery call useful from the first minute.
 
 "
+
+--------------------
+you told in our earlier conversation you have adde d it all.. but i can't see it on the new created lead at all.. neither on the old ones. (CRM-LEAD-2026-00017)
+  - Added a visible Booking & Calendar section on CRM Leads.
+  - Moved Booking Status, Cal.com Booking UID, Call Start/End, Meeting URL, and Event Type into it.
+  - Enabled Booking Status in the lead list and as a filter.
+
+cal.com_secret : ths is the secret i have put for cal.com. i will change it so no need to worry about benig revealed. test if all wokring cool. 
+
+i cancelled the meetings.. but nothin ghappned on crm , visibliy .. where can i check the logs here?
