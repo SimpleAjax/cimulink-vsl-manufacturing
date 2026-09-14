@@ -104,6 +104,12 @@
       }
       captureBookingEvent("manufacturing_booking_page_viewed", bookingAttribution);
       (function (C, A, L) {
+        let calendarTracked = false;
+        function trackCalendarViewed() {
+          if (calendarTracked) return;
+          calendarTracked = true;
+          captureBookingEvent("manufacturing_calendar_viewed", { event_slug: "manufacturing-strategy" });
+        }
         let p = function (a, ar) { a.q.push(ar); };
         C.Cal = C.Cal || function () { let a = C.Cal, ar = arguments; a.q = a.q || []; p(a, ar); };
         C.Cal.l = C.Cal.l || [];
@@ -122,10 +128,10 @@
         }
         C.Cal("inline", { elementOrSelector: "#my-cal-inline", calLink: "ajay-kaaran-gupta/manufacturing-strategy", config });
         C.Cal("on", { action: "__ready", callback: function () {
-          captureBookingEvent("manufacturing_calendar_viewed", { event_slug: "manufacturing-strategy" });
+          trackCalendarViewed();
         }});
         C.Cal("on", { action: "bookerViewed", callback: function () {
-          captureBookingEvent("manufacturing_calendar_viewed", { event_slug: "manufacturing-strategy" });
+          trackCalendarViewed();
         }});
         C.Cal("on", { action: "bookingSuccessfulV2", callback: function (event) {
           captureBookingEvent("manufacturing_booking_completed", {
