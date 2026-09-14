@@ -29,6 +29,17 @@ function frappeDateTime(value) {
   return date.toISOString().slice(0, 19).replace("T", " ");
 }
 
+function calChangeReason(payload) {
+  return String(
+    payload.cancellationReason ||
+    payload.reschedulingReason ||
+    payload.rescheduleReason ||
+    payload.responses?.rescheduleReason?.value ||
+    payload.responses?.reschedulingReason?.value ||
+    ""
+  ).trim().slice(0, 2000);
+}
+
 async function frappe(path, options = {}) {
   const response = await fetch(`${process.env.FRAPPE_BASE_URL}${path}`, {
     ...options,
@@ -77,6 +88,7 @@ module.exports = async function handler(req, res) {
     custom_call_end_at: frappeDateTime(payload.endTime),
     custom_call_meeting_url: payload.metadata?.videoCallUrl || payload.videoCallUrl || payload.location || "",
     custom_cal_additional_notes: String(payload.additionalNotes || payload.notes || "").trim().slice(0, 2000),
+    custom_cal_change_reason: calChangeReason(payload),
   };
 
   try {
