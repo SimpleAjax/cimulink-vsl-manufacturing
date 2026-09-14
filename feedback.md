@@ -12,3 +12,20 @@ also these 3 thigns aren't visible to me in the crm 'CRM-LEAD-2026-00015' u also
 
 
 what is the right way to cancel and reschedule this meting? from cal.com itself? how to do it?
+
+
+
+------------------------------------------
+
+the current webshook subscriber url in cal.com : https://manufacturing.cimulink.com/api/calcom/webhook
+ok but if the staus u talnig about is non visible field.. why do i even care abou tthat field.. what is the prupose fo that field then?
+how can i test if webhook arrived ropperly or not.. first was it even triggered from cal.com or not.. and second.. did it even arrive at vercel ro now?
+
+also on the popup form.. all this info doen's make sense.. keep it very simple pls : 
+
+"Before you choose a time
+
+Tell us where operations are getting stuck
+Share a few details so we can make your manufacturing operations discovery call useful from the first minute.
+
+"
