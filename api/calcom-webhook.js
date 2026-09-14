@@ -61,7 +61,9 @@ module.exports = async function handler(req, res) {
   const payload = event.payload || event;
   const trigger = String(event.triggerEvent || event.trigger || "").toUpperCase();
   const attendee = (payload.attendees || []).find((item) => item.email) || {};
-  const email = String(attendee.email || payload.booker?.email || "").trim().toLowerCase();
+  const attendeeEmail = String(attendee.email || payload.booker?.email || "").trim().toLowerCase();
+  const metadataLeadEmail = String(payload.metadata?.website_lead_email || "").trim().toLowerCase();
+  const email = metadataLeadEmail || attendeeEmail;
   if (!email) return json(res, 422, { error: "No attendee email in webhook" });
 
   const uid = payload.uid || payload.bookingUid || payload.rescheduleUid || "";

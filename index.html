@@ -1504,6 +1504,10 @@
               throw new Error(result.error || "Your details could not be saved. Please wait a minute and try again.");
             }
             posthogCapture("manufacturing_lead_form_submitted", { cta_location: data.cta_location });
+            sessionStorage.setItem("cimulink_booking_prefill", JSON.stringify({
+              name: String(data.full_name || "").trim(),
+              email: data.email,
+            }));
             window.location.href = "book-operational-visibility-call.html";
           } catch (error) {
             status.textContent = error.message === "Failed to fetch"

@@ -85,7 +85,30 @@
         };
         document.head.appendChild(posthogScript);
       }
-      (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; C.Cal = C.Cal || function () { let a = C.Cal, ar = arguments; a.q = a.q || []; p(a, ar); }; C.Cal.l = C.Cal.l || []; C.Cal.ns = {}; C.Cal("init", { origin: "https://app.cal.com" }); C.Cal("inline", { elementOrSelector: "#my-cal-inline", calLink: "ajay-kaaran-gupta/manufacturing-strategy", config: { layout: "month_view" } }); C.Cal("on", { action: "bookingSuccessfulV2", callback: function (event) { if (window.posthog) window.posthog.capture("manufacturing_booking_completed", { booking_uid: event.detail && event.detail.data && event.detail.data.uid, event_slug: "manufacturing-strategy" }); } }); let s = A.createElement("script"); s.async = true; s.src = L + "/embed/embed.js"; A.head.appendChild(s); })(window, document, "https://app.cal.com");
+      (function (C, A, L) {
+        let p = function (a, ar) { a.q.push(ar); };
+        C.Cal = C.Cal || function () { let a = C.Cal, ar = arguments; a.q = a.q || []; p(a, ar); };
+        C.Cal.l = C.Cal.l || [];
+        C.Cal.ns = {};
+        C.Cal("init", { origin: "https://app.cal.com" });
+        let prefill = {};
+        try { prefill = JSON.parse(sessionStorage.getItem("cimulink_booking_prefill") || "{}"); } catch (_) {}
+        const config = { layout: "month_view" };
+        if (prefill.email) {
+          config.email = prefill.email;
+          config["metadata[website_lead_email]"] = prefill.email;
+        }
+        if (prefill.name) {
+          config.name = prefill.name;
+          config["metadata[website_lead_name]"] = prefill.name;
+        }
+        C.Cal("inline", { elementOrSelector: "#my-cal-inline", calLink: "ajay-kaaran-gupta/manufacturing-strategy", config });
+        C.Cal("on", { action: "bookingSuccessfulV2", callback: function (event) {
+          if (window.posthog) window.posthog.capture("manufacturing_booking_completed", { booking_uid: event.detail && event.detail.data && event.detail.data.uid, event_slug: "manufacturing-strategy" });
+          sessionStorage.removeItem("cimulink_booking_prefill");
+        }});
+        let s = A.createElement("script"); s.async = true; s.src = L + "/embed/embed.js"; A.head.appendChild(s);
+      })(window, document, "https://app.cal.com");
     </script>
   </body>
 </html>
