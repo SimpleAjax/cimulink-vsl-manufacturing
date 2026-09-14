@@ -626,6 +626,99 @@
       .form-wrap {
         display: none;
       }
+      .modal-backdrop {
+        position: fixed;
+        z-index: 20;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 22px;
+        background: #0d1b18d9;
+      }
+      .modal-backdrop[hidden] {
+        display: none;
+      }
+      .lead-modal {
+        position: relative;
+        width: min(560px, 100%);
+        max-height: min(720px, calc(100vh - 44px));
+        overflow: auto;
+        padding: 34px;
+        background: var(--white);
+        box-shadow: 0 22px 80px #0000003d;
+      }
+      .modal-close {
+        position: absolute;
+        top: 13px;
+        right: 15px;
+        width: 35px;
+        height: 35px;
+        border: 1px solid var(--line);
+        background: transparent;
+        color: var(--pine);
+        font-size: 1.3rem;
+        cursor: pointer;
+      }
+      .lead-modal h2 {
+        margin-bottom: 10px;
+        font-size: clamp(1.65rem, 4vw, 2.25rem);
+      }
+      .lead-modal-intro {
+        margin-bottom: 24px;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+      .lead-form {
+        display: grid;
+        gap: 15px;
+      }
+      .lead-form label {
+        display: grid;
+        gap: 6px;
+        color: var(--ink);
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+      .lead-form input {
+        width: 100%;
+        min-height: 45px;
+        padding: 9px 12px;
+        border: 1px solid #aebfba;
+        background: #fff;
+        color: var(--ink);
+      }
+      .lead-form input:focus {
+        outline: 2px solid var(--moss);
+        outline-offset: 1px;
+      }
+      .required {
+        color: var(--clay);
+      }
+      .field-error {
+        min-height: 17px;
+        margin: 0;
+        color: #a43d2d;
+        font-size: 0.73rem;
+        font-weight: 600;
+      }
+      .form-status {
+        min-height: 20px;
+        margin: 0;
+        color: #a43d2d;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+      .lead-form .button[disabled] {
+        cursor: wait;
+        opacity: 0.65;
+      }
+      .honeypot {
+        position: absolute !important;
+        left: -10000px !important;
+        width: 1px !important;
+        height: 1px !important;
+        overflow: hidden !important;
+      }
       .disclaimer {
         max-width: 720px;
         margin: 30px auto 0;
@@ -1232,7 +1325,7 @@
             Bring the problem causing the most phone calls, stock checks or
             delivery questions. We will map the first sensible next step.
           </p>
-          <a class="button gold" href="https://calendly.com/ajay_k_gupta/30min"
+          <a class="button gold" href="#strategy" data-booking-cta="final_assessment"
             >Book your free operational visibility assessment <span>→</span></a
           >
           <p class="disclaimer">
@@ -1243,6 +1336,37 @@
         </div>
       </section>
     </main>
+    <div class="modal-backdrop" id="lead-modal" hidden>
+      <section class="lead-modal" role="dialog" aria-modal="true" aria-labelledby="lead-modal-title">
+        <button class="modal-close" type="button" aria-label="Close booking form">×</button>
+        <p class="eyebrow">Before you choose a time</p>
+        <h2 id="lead-modal-title">Tell us where operations are getting stuck</h2>
+        <p class="lead-modal-intro">
+          Share a few details so we can make your manufacturing operations discovery call useful from the first minute.
+        </p>
+        <form class="lead-form" id="lead-capture-form" novalidate>
+          <label>Full name <input name="full_name" autocomplete="name" maxlength="120" placeholder="Your name"></label>
+          <p class="field-error" data-error-for="full_name"></p>
+          <label>Email address <span><span class="required">*</span></span><input name="email" type="email" autocomplete="email" required maxlength="254" placeholder="[email protected]"></label>
+          <p class="field-error" data-error-for="email"></p>
+          <label>Phone number <span><span class="required">*</span></span><input name="phone" type="tel" autocomplete="tel" required inputmode="tel" placeholder="+91 98765 43210"></label>
+          <p class="field-error" data-error-for="phone"></p>
+          <label>Company <input name="company" autocomplete="organization" maxlength="140" placeholder="Your manufacturing company"></label>
+          <p class="field-error" data-error-for="company"></p>
+          <label>Designation <input name="designation" autocomplete="organization-title" maxlength="120" placeholder="Founder, Owner, Operations Head…"></label>
+          <p class="field-error" data-error-for="designation"></p>
+          <label class="honeypot" aria-hidden="true">Website URL<input name="website_url" tabindex="-1" autocomplete="off"></label>
+          <input type="hidden" name="cta_location">
+          <input type="hidden" name="landing_page_url">
+          <input type="hidden" name="utm_source">
+          <input type="hidden" name="utm_medium">
+          <input type="hidden" name="utm_campaign">
+          <input type="hidden" name="utm_content">
+          <p class="form-status" id="lead-form-status" role="alert"></p>
+          <button class="button" type="submit">Continue to choose a time <span>→</span></button>
+        </form>
+      </section>
+    </div>
     <footer>
       <div class="shell foot">
         <span
@@ -1253,6 +1377,136 @@
     </footer>
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
+
+      (function () {
+        const modal = document.getElementById("lead-modal");
+        const form = document.getElementById("lead-capture-form");
+        const status = document.getElementById("lead-form-status");
+        const closeButton = modal.querySelector(".modal-close");
+        let lastTrigger = null;
+
+        function posthogCapture(event, properties) {
+          if (window.posthog && typeof window.posthog.capture === "function") {
+            window.posthog.capture(event, properties || {});
+          }
+        }
+
+        function normalizePhone(value) {
+          const compact = String(value || "").trim().replace(/[\s().-]/g, "");
+          return compact.startsWith("00") ? "+" + compact.slice(2) : compact;
+        }
+
+        function validInternationalPhone(value) {
+          return /^\+[1-9]\d{7,14}$/.test(normalizePhone(value));
+        }
+
+        function setError(field, message) {
+          const target = form.querySelector(`[data-error-for="${field}"]`);
+          if (target) target.textContent = message || "";
+        }
+
+        function fillAttribution(ctaLocation) {
+          const params = new URLSearchParams(window.location.search);
+          form.elements.cta_location.value = ctaLocation || "unknown";
+          form.elements.landing_page_url.value = window.location.href;
+          ["utm_source", "utm_medium", "utm_campaign", "utm_content"].forEach((key) => {
+            form.elements[key].value = params.get(key) || "";
+          });
+        }
+
+        function openModal(trigger) {
+          lastTrigger = trigger;
+          const location = trigger.dataset.bookingCta || "unknown";
+          fillAttribution(location);
+          status.textContent = "";
+          modal.hidden = false;
+          document.body.style.overflow = "hidden";
+          posthogCapture("manufacturing_lead_form_opened", { cta_location: location });
+          form.elements.full_name.focus();
+        }
+
+        function closeModal() {
+          modal.hidden = true;
+          document.body.style.overflow = "";
+          if (lastTrigger) lastTrigger.focus();
+        }
+
+        document.querySelectorAll('a[href="#strategy"]').forEach((trigger, index) => {
+          if (!trigger.dataset.bookingCta) trigger.dataset.bookingCta = `strategy_cta_${index + 1}`;
+          trigger.addEventListener("click", (event) => {
+            event.preventDefault();
+            posthogCapture("manufacturing_book_call_cta_clicked", {
+              cta_location: trigger.dataset.bookingCta,
+              page_url: window.location.href,
+            });
+            openModal(trigger);
+          });
+        });
+
+        closeButton.addEventListener("click", closeModal);
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) closeModal();
+        });
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !modal.hidden) closeModal();
+        });
+
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          ["full_name", "email", "phone", "company", "designation"].forEach((field) => setError(field, ""));
+          status.textContent = "";
+          const submit = form.querySelector('button[type="submit"]');
+          const data = Object.fromEntries(new FormData(form).entries());
+          const email = String(data.email || "").trim();
+          const phone = normalizePhone(data.phone);
+          let valid = true;
+          if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setError("email", "Enter a valid email address.");
+            valid = false;
+          }
+          if (!phone || !/^\+[1-9]\d{7,14}$/.test(phone)) {
+            setError("phone", "Use an international number with country code, for example +91 98765 43210.");
+            valid = false;
+          }
+          if (!valid) return;
+          data.email = email;
+          data.phone = phone;
+          submit.disabled = true;
+          submit.setAttribute("aria-busy", "true");
+          submit.textContent = "Saving your details…";
+          try {
+            const response = await fetch("/api/create-lead", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: JSON.stringify(data),
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) {
+              setError(result.field || "phone", result.error || "Please check your details and try again.");
+              throw new Error(result.error || "Lead creation failed");
+            }
+            posthogCapture("manufacturing_lead_form_submitted", { cta_location: data.cta_location });
+            window.location.href = "book-operational-visibility-call.html";
+          } catch (error) {
+            status.textContent = error.message === "Lead creation failed" ? "We could not save your details. Please try again." : error.message;
+            submit.disabled = false;
+            submit.removeAttribute("aria-busy");
+            submit.textContent = "Continue to choose a time →";
+          }
+        });
+
+        // PostHog project tokens are public browser-side identifiers; keep Frappe/Cal secrets server-side.
+        window.POSTHOG_PROJECT_KEY = window.POSTHOG_PROJECT_KEY || "phc_uUG9DfjKwphRbomCnD2B6nD5BGHeJkE2u9rXsnAsirSu";
+        window.POSTHOG_HOST = window.POSTHOG_HOST || "https://us.i.posthog.com";
+        if (window.POSTHOG_PROJECT_KEY) {
+          const script = document.createElement("script");
+          script.src = "https://us.i.posthog.com/static/array.js";
+          script.onload = function () {
+            window.posthog.init(window.POSTHOG_PROJECT_KEY, { api_host: window.POSTHOG_HOST || "https://us.i.posthog.com" });
+          };
+          document.head.appendChild(script);
+        }
+      })();
     </script>
   </body>
 </html>
